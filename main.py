@@ -13,8 +13,9 @@ app.add_middleware(
 )
 
 
-class ChatRequest(BaseModel):
-    message: str
+class ChatRequest(BaseModel): # need a ChatRequest class that based on BaseMode to json can read
+    message: str # the name of attribute 'message' must be match with the json object {message: input}
+    # because fastapi will look the data for this attribute named 'message'
 
 @app.get("/")
 def root():
@@ -22,6 +23,12 @@ def root():
 
 @app.post("/chat")
 def chat(request: ChatRequest):
-    return {"reply": "I recieved " + request.message}
+    # when it recieved a json data like {'message: input'} from frontend. It see the json has a key is 'message' and it will check the ChatRequest that also need 'message'
+    # then it check if input is a 'str'. if everything is matched, fastapi will translate this json file to python object that we can use
+    return {"reply": "I recieved " + request.message} # it is a python object that called dictionary.
+    # it looks like exactly json format but it's a python object
+    # when we return it, fastapi will automatic translate it to a plain json likes using JSON.stringify().
+    # in the frontend, cuz we use headers is applicaion/json. fastapi will attaches exactly same headers to reply
+    # so we will extract this with response.json()
 
 
